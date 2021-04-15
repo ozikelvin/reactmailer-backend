@@ -12,6 +12,12 @@ exports.sendMail = (mail)=>{
         },
       });
 
-        transporter.sendMail(mail)
-    
+       transporter.sendMail(mail, (err, done)=>{
+        if(err){
+         return console.log('Something went wrong trying to send mail')
+        }
+       return console.log('Mail Sent Successfully')
+      })
+         
+
 }

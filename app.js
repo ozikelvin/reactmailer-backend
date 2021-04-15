@@ -4,11 +4,11 @@ require('dotenv').config()
 const port = process.env.PORT;
 const router = require('./route/route')
 const cors = require('cors');
-const { urlencoded } = require('express');
+
 
 app.use(cors())
 app.use(express.json())
-app.use(express.urlencoded({extended: false}));
+app.use(express.urlencoded({extended: true}));
 
 app.get('/', (req, res)=>{
     res.json({Message: 'Api is working fine'})
