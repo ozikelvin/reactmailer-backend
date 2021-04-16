@@ -6,34 +6,40 @@ const { updateUser, findUser } = require("../utils/user_utils/user")
 
 exports.signUp = async(req, res)=>{
 
-    const hash = await bcrypt.hash(req.body.password, 10);
-    
+    const { name, email, password } = req.body;
+    if (!name || !email || !password) return res.status(404).json({ Message: 'A required field is missing', success: false });
+
+    const { found } = await findUser({ email });
+    if (found) return res.status(404).json({ Message: 'This user already exists', success: false });
+
+    const hash = await bcrypt.hash(password, 10);
+
 
     const newUser = new User({
-        name: req.body.name,
-        email: req.body.email,
+        name: name,
+        email: email,
         password: hash,
-        expires: Date.now() + 60*60*60*60
+        expires: Date.now() + 60 * 60 * 60 * 60
     })
 
-   await newUser.save()
-    .then(done => {
-        console.log('User Created')
-      return  res.json({Message:'Successfully Created New User',success: true, user:done})
-    })
-    .catch(err =>{
-        console.log('Something went wrong')
-        res.status(401).json({Message:`Failed to register new User ${err}`, success: false})
-    })
+    await newUser.save()
+        .then(done => {
+            console.log('User Created')
+            return res.json({ Message: 'Successfully Created New User', success: true })
+        })
+        .catch(err => {
+            console.log('Something went wrong')
+            res.status(401).json({ Message: `Failed to register new User ${err}`, success: false })
+        })
 
 }
 
 exports.login = async (req, res)=>{
 
     const {email, password } = req.body
-
+    if (!email || !password) return res.status(404).json({ Message: 'A required field is missing', success: false });
     const { found, user } = await findUser({ email });
-
+    console.log(user._id);
     if (!found) return res.status(401).json({ Message: 'Wrong Username or password', success: false })
 
     if (Number(user.expires) - Date.now() <= 0) return res.json({ Message: 'Recharge', success: false, expired: true })
@@ -42,11 +48,11 @@ exports.login = async (req, res)=>{
 
         if (!done) return res.status(401).json({ Message: 'Wrong Username or password', success: false });
 
-        signJWT(user.id, null, (error, token) => {
-
+        signJWT(user._id, null, async (error, token) => {
+            if (error) console.log(error.message);
             if (error) return res.status(404).json({ Message: "Unauthorized access" });
 
-            const { updated } = await updateUser({ _id: user.id }, { token });
+            const { updated } = await updateUser({ _id: user._id }, { token: token });
 
             if (updated) return res.status(200).json({ Message: 'Successfully logged In', success: true, token });
 
@@ -64,8 +70,8 @@ exports.login = async (req, res)=>{
 
 
 exports.logout = async (req, res) => {
-    const { userid } = req.locals;
-    const { updated } = await updateUser({ _id: userid }, { token: null });
+    const userid = req.locals;
+    const { updated } = await updateUser({ _id: userid.username }, { token: null });
     if (!updated) return res.status(404).json({ message: "Logout error" });
     return res.status(200).json({ Message: 'Successfully logged Out', success: true });
 }

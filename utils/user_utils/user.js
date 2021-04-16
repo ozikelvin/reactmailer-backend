@@ -8,6 +8,7 @@ const updateUser = async (searchParam, propertyToUpdate) => {
             { $set: propertyToUpdate },
             { upsert: true, new: true }
         ).lean().exec();
+        console.log(user);
         if (user) return { updated: true, user };
         return { updated: false };
     } catch {

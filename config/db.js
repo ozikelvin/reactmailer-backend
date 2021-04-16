@@ -7,7 +7,7 @@ const doMongo = () => {
         useFindAndModify: false,
         useCreateIndex: true
     }
-    return mongoose.connect(`${process.env.URL}/${process.env.DbName}`, uri)
+    return mongoose.connect(process.env.MONGO_URI, uri)
         .then(done => console.log('Successfully connected to the Data Base'))
         .catch(err => console.log('An err occured in connecting to the Data Base' + err))
 
