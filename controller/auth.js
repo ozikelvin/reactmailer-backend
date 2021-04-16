@@ -1,8 +1,8 @@
-const mongoose = require('mongoose');
+
  const bcrypt = require('bcrypt');
  const User = require('../user/user');
- const jwt = require('jsonwebtoken');
- 
+const { signJWT } = require("../utils/jwtHelpers")
+const { updateUser, findUser } = require("../utils/user_utils/user")
 
 exports.signUp = async(req, res)=>{
 
@@ -32,45 +32,41 @@ exports.login = async (req, res)=>{
 
     const {email, password } = req.body
 
-    const user = await User.findOne({email: email})
-    if(!user){
-        console.log('Wrong Username or password')
-        return res.status(401).json({Message: 'Wrong Username or password', success:false})
-  }else if(Number(user.expires)- Date.now() <= 0){
-      console.log('Sub don finish')
-    return res.json({Message:'Recharge', success:false, expired:true}) 
-  }else{
-    await bcrypt.compare(password, user.password)
-    .then((done)=>{
-        if(!done){
-           console.log('Wrong Username or password')
-         return res.status(401).json({Message: 'Wrong Username or password', success:false})  
-        }
-        else{
-            console.log('Login Successful')
-            let token = {
-                id: user._id,
-                counter: user.counter,
-                name: user.name,
-                email:user.email
-            }
-        
-            res.cookie('token', token, {
-                httpOnly:true,
-                sameSite:false,
-                secure: process.env.NODE_ENV === 'production' ? true: false
-            });
-            
-            // console.log(res.cookie()
-            res.status(200).json({Message: 'Successfully logged In', success:true})
-            
-        }
+    const { found, user } = await findUser({ email });
+
+    if (!found) return res.status(401).json({ Message: 'Wrong Username or password', success: false })
+
+    if (Number(user.expires) - Date.now() <= 0) return res.json({ Message: 'Recharge', success: false, expired: true })
+
+    await bcrypt.compare(password, user.password).then((done) => {
+
+        if (!done) return res.status(401).json({ Message: 'Wrong Username or password', success: false });
+
+        signJWT(user.id, null, (error, token) => {
+
+            if (error) return res.status(404).json({ Message: "Unauthorized access" });
+
+            const { updated } = await updateUser({ _id: user.id }, { token });
+
+            if (updated) return res.status(200).json({ Message: 'Successfully logged In', success: true, token });
+
+            return res.status(404).json({ Message: "Problem occured with login" });
+
+        });
     })
-    .catch(err =>{
-        console.log('Something went wrong '+ err)
-          res.status(401).json({Message: 'Wrong Username or password' + err, success:false})
-    })
+        .catch(err => {
+
+            res.status(401).json({ Message: 'Wrong Username or password' + err, success: false })
+        })
    
   }
-            
+
+
+
+exports.logout = async (req, res) => {
+    const { userid } = req.locals;
+    const { updated } = await updateUser({ _id: userid }, { token: null });
+    if (!updated) return res.status(404).json({ message: "Logout error" });
+    return res.status(200).json({ Message: 'Successfully logged Out', success: true });
 }
+
