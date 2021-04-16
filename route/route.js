@@ -22,7 +22,7 @@ router.post('/multipleSend', extractJWT, checkJWT, uploads.single('file'), sendM
 router.post('/logout', extractJWT, auth.logout);
 
 /// Profile
-router.post('/profile', extractJWT, profile);
+router.get('/profile', extractJWT, profile);
 
 
 module.exports = router;
