@@ -4,7 +4,7 @@ const router = express()
 const sendMailController = require('../controller/mail');
 const uploads = require('../utils/uploads')
 const auth = require('../controller/auth');
-const logCheck = require('../utils/check');
+const profile = require('../controller/profile');
 const { extractJWT, checkJWT } = require("../utils/jwtHelpers");
 
 
@@ -20,6 +20,9 @@ router.post('/multipleSend', extractJWT, checkJWT, uploads.single('file'), sendM
 
 /// LogOut 
 router.post('/logout', extractJWT, auth.logout);
+
+/// Profile
+router.post('/profile', extractJWT, profile);
 
 
 module.exports = router;
