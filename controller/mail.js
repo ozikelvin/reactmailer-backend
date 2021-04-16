@@ -12,8 +12,8 @@ const nodemailer = require('nodemailer');
         },
       });                
                 //let rep = rp.split(',')[1]
-                        //console.log(req.file)
-                    let newMail = {
+                
+                    const newMail = {
                         from: req.body.sender, 
                         to: req.body.receiver,
                         subject: req.body.subject,
@@ -60,6 +60,8 @@ exports.multipleMail = async (req, res)=>{
                 { path: req.file.path}
         ]
     }
+
+    console.log(newMail)
             
     transporter.sendMail(newMail, (err, done)=>{
         if(err){
