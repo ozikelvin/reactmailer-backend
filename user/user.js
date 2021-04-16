@@ -6,7 +6,8 @@ const userSchema = new mongoose.Schema({
     password:{type: String},
     counter: {type: Number, default:30},
     created_at:{type: Date,  default:Date.now()},
-    expires: {type: Date}
+    expires: { type: Date },
+    token: String
 })
 
 const User = new mongoose.model('user', userSchema)
