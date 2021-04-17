@@ -2,29 +2,35 @@
  const bcrypt = require('bcrypt');
  const User = require('../user/user');
 const { signJWT } = require("../utils/jwtHelpers")
-const { updateUser, findUser } = require("../utils/user_utils/user")
+const { updateUser, findUser } = require("../utils/user_utils/user");
+const { updateCoupon, findCoupon } = require("../utils/coupon_utils/coupon");
 
 exports.signUp = async(req, res)=>{
 
-    const { name, email, password } = req.body;
-    if (!name || !email || !password) return res.status(404).json({ Message: 'A required field is missing', success: false });
+    const { name, email, password, coupon } = req.body;
+    if (!name || !email || !password || !coupon) return res.status(404).json({ Message: 'A required field is missing', success: false });
 
     const { found } = await findUser({ email });
+
     if (found) return res.status(404).json({ Message: 'This user already exists', success: false });
 
+    const { found, couponFound } = await findCoupon({ coupon });
+    if (!found) return res.status(404).json({ Message: 'This coupon does not exist', success: false });
+
+    if (couponFound.isUsed) return res.status(404).json({ Message: 'This coupon is no longer valid.', success: false });
+
     const hash = await bcrypt.hash(password, 10);
-
-
     const newUser = new User({
         name: name,
         email: email,
         password: hash,
-        expires: Date.now() + 60 * 60 * 60 * 60
+        registrationMonth: +(new Date().getMonth())
     })
 
     await newUser.save()
         .then(done => {
-            console.log('User Created')
+            const { updated } = await updateCoupon({ coupon }, { isUsed: true });
+            if (!updated) return res.status(404).json({ Message: 'There is an issue with your coupon', success: false });
             return res.json({ Message: 'Successfully Created New User', success: true })
         })
         .catch(err => {
@@ -39,7 +45,9 @@ exports.login = async (req, res)=>{
     const {email, password } = req.body
     if (!email || !password) return res.status(404).json({ Message: 'A required field is missing', success: false });
     const { found, user } = await findUser({ email });
-    console.log(user._id);
+
+    if (+(new Date().getMonth()) - user.registrationMonth > 2) return res.status(404).json({ Message: 'Your coupon has expired.', success: false });
+
     if (!found) return res.status(401).json({ Message: 'Wrong Username or password', success: false })
 
     if (Number(user.expires) - Date.now() <= 0) return res.json({ Message: 'Recharge', success: false, expired: true })
@@ -49,7 +57,7 @@ exports.login = async (req, res)=>{
         if (!done) return res.status(401).json({ Message: 'Wrong Username or password', success: false });
 
         signJWT(user._id, null, async (error, token) => {
-            if (error) console.log(error.message);
+
             if (error) return res.status(404).json({ Message: "Unauthorized access" });
 
             const { updated } = await updateUser({ _id: user._id }, { token: token });

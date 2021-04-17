@@ -61,8 +61,23 @@ const checkJWT = async (req, res, next) => {
 
 
 
+/// This should also be its own function in a middleware folder
+const checkAdminJWT = async (req, res, next) => {
+    try {
+        const userid = req.locals;
+        if (!userid) return res.status(404).json({ Message: 'Failed to authenticate admin', success: false });
+        if (userid.username !== process.env.ADMIN_NAME) return res.status(404).json({ Message: 'Failed to authenticate admin', success: false });
+        next();
+    } catch {
+        return res.status(404).json({ Message: "Unauthorized access" })
+    }
+}
+
+
+
 module.exports = {
     signJWT,
     extractJWT,
-    checkJWT
+    checkJWT,
+    checkAdminJWT
 }
