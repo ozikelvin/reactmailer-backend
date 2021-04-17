@@ -29,9 +29,30 @@ const findUser = async (searchParam) => {
     }
 }
 
+const getAllUsers = async () => {
+    try {
+        const user = await User.find({}).select('name email registrationMonth').lean().exec();
+        if (user) return { foundUsers: true, users };
+        return { foundUsers: false };
+    } catch {
+        return { foundUsers: false };
+    }
+}
 
+
+const deleteUser = async (searchParam) => {
+    try {
+        const err = await User.deleteOne(searchParam);
+        if (err) return { deleted: false };
+        return { deleted: true };
+    } catch {
+        return { deleted: false };
+    }
+}
 
 module.exports = {
     updateUser,
-    findUser
+    findUser,
+    getAllUsers,
+    deleteUser
 }
