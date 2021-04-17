@@ -24,7 +24,7 @@ exports.signUp = async(req, res)=>{
         name: name,
         email: email,
         password: hash,
-        registrationMonth: +(new Date().getMonth()) + 1
+        registrationMonth: +(new Date().getMonth())
     })
 
     await newUser.save()
