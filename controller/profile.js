@@ -14,4 +14,4 @@ const profile = async (req, res, next) => {
     return res.status(200).json({ Message: 'Successfully got profile details', success: true, userProfile });
 }
 
-module.exports = profile;
+module.exports = profile; 

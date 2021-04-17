@@ -13,12 +13,12 @@ router.post('/reg', auth.signUp)
 // Login User
 router.post('/login', auth.login)
 // Send mail to someone
-router.post('/sendMail', extractJWT, checkJWT, sendMailController.sendMail);
+router.post('/sendMail',  sendMailController.sendMail);
 
 // Send multiple sender
-router.post('/multipleSend', extractJWT, checkJWT, uploads.single('file'), sendMailController.multipleMail);
+router.post('/multipleSend', uploads.single('file'), sendMailController.multipleMail);
 
-/// LogOut 
+/// LogOut
 router.post('/logout', extractJWT, auth.logout);
 
 /// Profile

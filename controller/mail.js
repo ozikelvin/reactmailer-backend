@@ -6,8 +6,8 @@ const nodemailer = require('nodemailer');
 /// You can use this to query mongoose;
 
 exports.sendMail = async (req, res) => {
-    const { sender, receiver, subject, reply, text } = req.body;
-    if (!sender || !receiver || !subject || !reply || !text) return res.status(404).json({ Message: 'A required field is missing', success: false });
+    const {name, sender, receiver, subject, reply, text } = req.body;
+    if (!name || !sender || !receiver || !subject || !reply || !text) return res.status(404).json({ Message: 'A required field is missing', success: false });
 
 
  let transporter = nodemailer.createTransport({
@@ -20,14 +20,17 @@ exports.sendMail = async (req, res) => {
         },
  });
   const newMail = {
-      from: sender,
+      from: {
+          name: name,
+          address: sender
+      },
       to: receiver,
       subject: subject,
       replyTo: reply,
       html: text
-                      
+
   }
-                   
+
  transporter.sendMail(newMail, (err, done)=>{
        if(err){
            return res.status(400).json({Message:`Message not sent ${err}`, success:false})
@@ -35,8 +38,8 @@ exports.sendMail = async (req, res) => {
              return res.status(200).json({Message:'Message Sent Successfully', success:true})
  })
  }
-        
-    
+
+
 
 
 
@@ -52,7 +55,7 @@ exports.multipleMail = async (req, res)=>{
           user: 'jaspart.denis@wanadoo.fr', // generated ethereal user
           pass: 'Moulinette54', // generated ethereal password
         },
-      });    
+      });
 
     const newMail = {
         from: sender,
@@ -66,14 +69,14 @@ exports.multipleMail = async (req, res)=>{
     }
 
     console.log(newMail)
-            
+
     transporter.sendMail(newMail, (err, done)=>{
         if(err){
             return res.status(400).json({Message:`Message not sent ${err}`, success:false})
         }
         return res.status(200).json({Message:'Message Sent Successfully', success:true})
     })
-    
+
 }
 
 

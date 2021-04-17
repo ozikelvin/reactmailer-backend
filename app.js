@@ -12,7 +12,7 @@ app.use(cookie())
 app.use(express.urlencoded({extended: true}));
 const port = process.env.PORT;
 /// Connect to mongo
-doMongo();
+doMongo(); 
 
 app.get('/', (req, res)=>{
     res.json({Message: 'Api is working fine'})

@@ -4,6 +4,10 @@
 const { signJWT } = require("../utils/jwtHelpers")
 const { updateUser, findUser } = require("../utils/user_utils/user")
 
+// exports.getUsers = (req, res) =>{
+//     User.findOne({nam})
+// }
+
 exports.signUp = async(req, res)=>{
 
     const { name, email, password } = req.body;
@@ -64,7 +68,7 @@ exports.login = async (req, res)=>{
 
             res.status(401).json({ Message: 'Wrong Username or password' + err, success: false })
         })
-   
+
   }
 
 
