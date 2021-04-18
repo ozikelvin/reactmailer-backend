@@ -29,15 +29,15 @@ router.get('/profile', extractJWT, checkJWT, profile);
 router.post('/admin.v1/login', admin.login);
 
 /// Admin get coupons and users
-router.get('/admin.v1/details', extractJWT, checkAdminJWT, admin.getDetails);
+router.get('/admin.v1/details',  admin.getDetails);
 
 /// Admin create coupon
 router.post("/admin.v1/coupon/create",  coupon.createACoupon);
 
 /// Adimin delete coupon
-router.post("/admin.v1/coupon/delete", extractJWT, checkAdminJWT, coupon.deleteACoupon);
+router.post("/admin.v1/coupon/delete",  coupon.deleteACoupon);
 
 /// Admin delete user
-router.post("/user/delete", extractJWT, checkAdminJWT, admin.deleteAUser);
+router.post("/admin.v1/user/delete", admin.deleteAUser); 
 
 module.exports = router;

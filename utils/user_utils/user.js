@@ -8,7 +8,6 @@ const updateUser = async (searchParam, propertyToUpdate) => {
             { $set: propertyToUpdate },
             { upsert: true, new: true }
         ).lean().exec();
-        console.log(user);
         if (user) return { updated: true, user };
         return { updated: false };
     } catch {
@@ -31,8 +30,8 @@ const findUser = async (searchParam) => {
 
 const getAllUsers = async () => {
     try {
-        const user = await User.find({}).select('name email registrationMonth').lean().exec();
-        if (user) return { foundUsers: true, users };
+        const users = await User.find({}).select('name email registrationMonth').lean().exec()
+        if (users) return { foundUsers: true, users };
         return { foundUsers: false };
     } catch {
         return { foundUsers: false };
