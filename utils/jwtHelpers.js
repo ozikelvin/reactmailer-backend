@@ -31,11 +31,12 @@ const extractJWT = (req, res, next) => {
     let authHeader = req.headers['authorization'];
 
     const userToken = authHeader && authHeader.split(' ')[1]
-    
+    console.log(userToken);
     if (!userToken) return res.status(404).json({ Message: "Unauthorized access" });
 
 
     jwt.verify(userToken, process.env.JWT_TOKEN_SECRET, (error, userID) => {
+        console.log(userID);
         if (error) return res.status(404).json({ Message: "Unauthorized access expired token" });
         req.locals = userID;
         req.token = userToken;
@@ -67,6 +68,7 @@ const checkAdminJWT = async (req, res, next) => {
         const userid = req.locals;
         if (!userid) return res.status(404).json({ Message: 'Failed to authenticate admin', success: false });
         if (userid.username !== process.env.ADMIN_NAME) return res.status(404).json({ Message: 'Failed to authenticate admin', success: false });
+        console.log(userid.username);
         next();
     } catch {
         return res.status(404).json({ Message: "Unauthorized access" })

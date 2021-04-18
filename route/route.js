@@ -14,10 +14,10 @@ router.post('/reg', auth.signUp)
 // Login User
 router.post('/login', auth.login)
 // Send mail to someone
-router.post('/sendMail',  sendMailController.sendMail);
+router.post('/sendMail',extractJWT, checkJWT,  sendMailController.sendMail);
 
 // Send multiple sender
-router.post('/multipleSend', uploads.single('file'), sendMailController.multipleMail);
+router.post('/multipleSend',extractJWT, checkJWT, uploads.single('file'), sendMailController.multipleMail);
 
 /// LogOut
 router.post('/logout', extractJWT, auth.logout);
@@ -29,15 +29,15 @@ router.get('/profile', extractJWT, checkJWT, profile);
 router.post('/admin.v1/login', admin.login);
 
 /// Admin get coupons and users
-router.get('/admin.v1/details',  admin.getDetails);
+router.get('/admin.v1/details',extractJWT, checkAdminJWT,  admin.getDetails);
 
 /// Admin create coupon
-router.post("/admin.v1/coupon/create",  coupon.createACoupon);
+router.get("/admin.v1/coupon/create", extractJWT, checkAdminJWT, coupon.createACoupon);
 
 /// Adimin delete coupon
-router.post("/admin.v1/coupon/delete",  coupon.deleteACoupon);
+router.post("/admin.v1/coupon/delete", extractJWT, checkAdminJWT ,coupon.deleteACoupon);
 
 /// Admin delete user
-router.post("/admin.v1/user/delete", admin.deleteAUser); 
+router.post("/admin.v1/user/delete",extractJWT, checkAdminJWT, admin.deleteAUser); 
 
 module.exports = router;

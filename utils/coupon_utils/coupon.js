@@ -58,9 +58,9 @@ const createCoupon = async (coupon) => {
 
 const deleteCoupon = async (searchParam) => {
     try {
-        const err = await Coupon.deleteOne(searchParam);
-        if (err) return { deleted: false };
-        return { deleted: true };
+        const done = await Coupon.deleteOne(searchParam);
+        if (done.deletedCount > 0) return { deleted: true };
+         return { deleted: false };
     } catch {
         return { deleted: false };
     }

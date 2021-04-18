@@ -41,9 +41,9 @@ const getAllUsers = async () => {
 
 const deleteUser = async (searchParam) => {
     try {
-        const err = await User.deleteOne(searchParam);
-        if (err) return { deleted: false };
-        return { deleted: true };
+        const done = await User.deleteOne(searchParam);
+        if (done.deletedCount > 0) return { deleted: true };
+        return { deleted: false };
     } catch {
         return { deleted: false };
     }
