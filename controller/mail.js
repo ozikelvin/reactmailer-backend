@@ -43,10 +43,10 @@ exports.sendMail = async (req, res) => {
 
 
 
-exports.multipleMail = async (req, res)=>{
+exports.multipleMail = async (req, res) => {
 
-    const { sender, receiver, subject, reply, text } = req.body;
-    if (!sender || !receiver || !subject || !reply || !text) return res.status(404).json({ Message: 'A required field is missing', success: false });
+    const { sender, receiver, subject, reply, text, name } = req.body;
+    if (!sender || !receiver || !subject || !reply || !text || !name) return res.status(404).json({ Message: 'A required field is missing', success: false });
     let transporter = nodemailer.createTransport({
         host: 'smtp.premium.orange.fr',
         port: 587,
@@ -58,7 +58,10 @@ exports.multipleMail = async (req, res)=>{
       });
 
     const newMail = {
-        from: sender,
+         from: {
+          name: name,
+          address: sender
+        },
         to: receiver,
         subject: subject,
         replyTo: reply,

@@ -5,9 +5,7 @@ const { signJWT } = require("../utils/jwtHelpers")
 const { updateUser, findUser } = require("../utils/user_utils/user");
 const { updateCoupon, findCoupon } = require("../utils/coupon_utils/coupon");
 
-// exports.getUsers = (req, res) =>{
-//     User.findOne({nam})
-// }
+
 
 exports.signUp = async(req, res)=>{
 
@@ -60,7 +58,7 @@ exports.login = async (req, res)=>{
 
         if (!done) return res.status(401).json({ Message: 'Wrong Username or password', success: false });
 
-        signJWT(user._id, null, async (error, token) => {
+        signJWT(user._id, "120m", async (error, token) => {
 
             if (error) return res.status(404).json({ Message: "Unauthorized access" });
 
