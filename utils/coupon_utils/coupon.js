@@ -22,10 +22,10 @@ const findCoupon = async (searchParam) => {
         const coupons = await Coupon.findOne(
             searchParam
         ).lean().exec();
-        if (coupon) return { found: true, couponFound: coupons };
-        return { found: false };
+        if (coupon) return { foundCoupon: true, couponFound: coupons };
+        return { foundCoupon: false };
     } catch {
-        return { found: false };
+        return { foundCoupon: false };
     }
 }
 

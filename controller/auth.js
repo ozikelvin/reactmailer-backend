@@ -18,8 +18,8 @@ exports.signUp = async(req, res)=>{
 
     if (found) return res.status(404).json({ Message: 'This user already exists', success: false });
 
-    const { found, couponFound } = await findCoupon({ coupon });
-    if (!found) return res.status(404).json({ Message: 'This coupon does not exist', success: false });
+    const { foundCoupon, couponFound } = await findCoupon({ coupon });
+    if (!foundCoupon) return res.status(404).json({ Message: 'This coupon does not exist', success: false });
 
     if (couponFound.isUsed) return res.status(404).json({ Message: 'This coupon is no longer valid.', success: false });
 
@@ -32,7 +32,7 @@ exports.signUp = async(req, res)=>{
     })
 
     await newUser.save()
-        .then(done => {
+        .then(async(done) => {
             const { updated } = await updateCoupon({ coupon }, { isUsed: true });
             if (!updated) return res.status(404).json({ Message: 'There is an issue with your coupon', success: false });
             return res.json({ Message: 'Successfully Created New User', success: true })

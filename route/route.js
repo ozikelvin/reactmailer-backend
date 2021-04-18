@@ -26,16 +26,16 @@ router.post('/logout', extractJWT, auth.logout);
 router.get('/profile', extractJWT, checkJWT, profile);
 
 /// Admin login
-router.post('/adminLogin', admin.login);
+router.post('/admin.v1/login', admin.login);
 
 /// Admin get coupons and users
-router.get('/details', extractJWT, checkAdminJWT, admin.getDetails);
+router.get('/admin.v1/details', extractJWT, checkAdminJWT, admin.getDetails);
 
 /// Admin create coupon
-router.get("/coupon/create", extractJWT, checkAdminJWT, coupon.createACoupon);
+router.post("/admin.v1/coupon/create",  coupon.createACoupon);
 
 /// Adimin delete coupon
-router.post("/coupon/delete", extractJWT, checkAdminJWT, coupon.deleteACoupon);
+router.post("/admin.v1/coupon/delete", extractJWT, checkAdminJWT, coupon.deleteACoupon);
 
 /// Admin delete user
 router.post("/user/delete", extractJWT, checkAdminJWT, admin.deleteAUser);
