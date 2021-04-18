@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const couponSchema = new mongoose.Schema({
     code: String,
     isUsed: {
-        type: String,
+        type: Boolean,
         default: false
     },
     created_at: { type: Date, default: Date.now() },

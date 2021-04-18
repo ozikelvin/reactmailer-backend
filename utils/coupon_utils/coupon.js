@@ -19,13 +19,16 @@ const updateCoupon = async (searchParam, propertyToUpdate) => {
 
 const findCoupon = async (searchParam) => {
     try {
-        const coupons = await Coupon.findOne(
+        const coupon = await Coupon.findOne(
             searchParam
         ).lean().exec();
-        if (coupon) return { found: true, couponFound: coupons };
-        return { found: false };
+
+
+        console.log(coupon);
+        if (coupon) return { foundCoupon: true, couponFound: coupon };
+        return { foundCoupon: false };
     } catch {
-        return { found: false };
+        return { foundCoupon: false };
     }
 }
 

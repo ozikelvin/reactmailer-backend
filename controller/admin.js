@@ -17,7 +17,7 @@ const login = (req, res, next) => {
     });
 }
 
-const getDetails = (req, res, next) => {
+const getDetails = async (req, res, next) => {
 
     const { foundUsers, users } = await getAllUsers();
     if (foundUsers) {
@@ -34,7 +34,7 @@ const getDetails = (req, res, next) => {
 
 }
 
-const deleteAUser = (req, res, next) => {
+const deleteAUser = async(req, res, next) => {
     const { userID } = req.body;
     const { deleted } = await deleteUser({ _id: userID });
     if (!deleted) return res.status(404).json({ Message: 'Something went wrong', success: false });
