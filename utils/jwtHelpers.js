@@ -9,7 +9,7 @@ const signJWT = (username, expires, callback) => {
                 username: username,
             },
             process.env.JWT_TOKEN_SECRET,
-            expires ? { expiresIn: expires } : { expiresIn: '2h' },
+            expires ? { expiresIn: expires } : { expiresIn: '3h' },
             (error, token) => {
                 if (error) {
                     callback(error, null);
@@ -27,7 +27,7 @@ const signJWT = (username, expires, callback) => {
 
 /// This should be its own function in a middleware folder
 const extractJWT = (req, res, next) => {
-    console.log('rann...')
+
     let authHeader = req.headers['authorization'];
 
     const userToken = authHeader && authHeader.split(' ')[1]
@@ -36,7 +36,7 @@ const extractJWT = (req, res, next) => {
 
 
     jwt.verify(userToken, process.env.JWT_TOKEN_SECRET, (error, userID) => {
-        
+
 
         if (error) return res.status(404).json({ Message: "Unauthorized access expired token" });
         req.locals = userID;
