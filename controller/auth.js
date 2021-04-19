@@ -58,7 +58,7 @@ exports.login = async (req, res)=>{
 
         if (!done) return res.status(401).json({ Message: 'Wrong Username or password', success: false });
 
-        signJWT(user._id, "120m", async (error, token) => {
+        signJWT(user._id, null, async (error, token) => {
 
             if (error) return res.status(404).json({ Message: "Unauthorized access" });
 
@@ -80,8 +80,8 @@ exports.login = async (req, res)=>{
 
 
 exports.logout = async (req, res) => {
-    const userid = req.locals;
-    const { updated } = await updateUser({ _id: userid.username }, { token: null });
+    const {username}= req.body;
+    const { updated } = await updateUser({ name: username }, { token: null });
     if (!updated) return res.status(404).json({ message: "Logout error" });
     return res.status(200).json({ Message: 'Successfully logged Out', success: true });
 }

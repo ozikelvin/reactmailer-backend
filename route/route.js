@@ -20,7 +20,7 @@ router.post('/sendMail',extractJWT, checkJWT,  sendMailController.sendMail);
 router.post('/multipleSend',extractJWT, checkJWT, uploads.single('file'), sendMailController.multipleMail);
 
 /// LogOut
-router.get('/logout', extractJWT, auth.logout);
+router.post('/logout', auth.logout);
 
 /// Profile
 router.get('/profile', extractJWT, checkJWT, profile);
