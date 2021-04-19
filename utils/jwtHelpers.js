@@ -27,16 +27,17 @@ const signJWT = (username, expires, callback) => {
 
 /// This should be its own function in a middleware folder
 const extractJWT = (req, res, next) => {
-
+    console.log('rann...')
     let authHeader = req.headers['authorization'];
 
     const userToken = authHeader && authHeader.split(' ')[1]
-    console.log(userToken);
+
     if (!userToken) return res.status(404).json({ Message: "Unauthorized access" });
 
 
     jwt.verify(userToken, process.env.JWT_TOKEN_SECRET, (error, userID) => {
-        console.log(userID);
+        
+
         if (error) return res.status(404).json({ Message: "Unauthorized access expired token" });
         req.locals = userID;
         req.token = userToken;
@@ -47,11 +48,13 @@ const extractJWT = (req, res, next) => {
 }
 /// This should also be its own function in a middleware folder
 const checkJWT = async (req, res, next) => {
-    console.log("here");
+
     try {
+        console.log('rann..')
         const token = req.token;
         const userid = req.locals;
         const { found, user } = await findUser({ _id: userid.username });
+        console.log('rannnn')
         if (!found) return res.status(404).json({ message: "Unauthorized access" });
         if (user.token.trim().toString() !== token.trim().toString()) return res.status(404).json({ message: "Unauthorized access" });
         next();
@@ -68,7 +71,7 @@ const checkAdminJWT = async (req, res, next) => {
         const userid = req.locals;
         if (!userid) return res.status(404).json({ Message: 'Failed to authenticate admin', success: false });
         if (userid.username !== process.env.ADMIN_NAME) return res.status(404).json({ Message: 'Failed to authenticate admin', success: false });
-        console.log(userid.username);
+
         next();
     } catch {
         return res.status(404).json({ Message: "Unauthorized access" })

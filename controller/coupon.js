@@ -8,7 +8,7 @@ const createACoupon = async (req, res, next) => {
     }
     const { created, newCoupon } = await createCoupon(newCouponToSend);
     if (!created) return res.status(404).json({ Message: 'Something went wrong', success: false });
-    res.status(200).json({ Message: 'Coupon created', success: true, newCoupon });
+    res.status(200).json({ Message: 'Coupon created Successfully', success: true, newCoupon });
 }
 
 
@@ -24,4 +24,4 @@ const deleteACoupon = async(req, res, next) => {
 module.exports = {
     createACoupon,
     deleteACoupon
-}
+} 

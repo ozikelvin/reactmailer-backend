@@ -1,6 +1,7 @@
 const { findUser } = require("../utils/user_utils/user")
 
 const profile = async (req, res, next) => {
+    console.log('Rannnn')
     const userid = req.locals;
     const { found, user } = await findUser({ _id: userid.username });
     if (!found) return res.status(404).json({ Message: 'Could not get user profile details', success: false });
@@ -11,7 +12,8 @@ const profile = async (req, res, next) => {
         expires: user.expires
     }
 
+    console.log(userProfile)
     return res.status(200).json({ Message: 'Successfully got profile details', success: true, userProfile });
 }
 
-module.exports = profile; 
+module.exports = profile;

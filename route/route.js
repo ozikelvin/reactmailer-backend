@@ -20,7 +20,7 @@ router.post('/sendMail',extractJWT, checkJWT,  sendMailController.sendMail);
 router.post('/multipleSend',extractJWT, checkJWT, uploads.single('file'), sendMailController.multipleMail);
 
 /// LogOut
-router.post('/logout', extractJWT, auth.logout);
+router.get('/logout', extractJWT, auth.logout);
 
 /// Profile
 router.get('/profile', extractJWT, checkJWT, profile);
@@ -38,6 +38,6 @@ router.get("/admin.v1/coupon/create", extractJWT, checkAdminJWT, coupon.createAC
 router.post("/admin.v1/coupon/delete", extractJWT, checkAdminJWT ,coupon.deleteACoupon);
 
 /// Admin delete user
-router.post("/admin.v1/user/delete",extractJWT, checkAdminJWT, admin.deleteAUser); 
+router.post("/admin.v1/user/delete",extractJWT, checkAdminJWT, admin.deleteAUser);
 
 module.exports = router;

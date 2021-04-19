@@ -24,7 +24,6 @@ const findCoupon = async (searchParam) => {
         ).lean().exec();
 
 
-        console.log(coupon);
         if (coupon) return { foundCoupon: true, couponFound: coupon };
         return { foundCoupon: false };
     } catch {
